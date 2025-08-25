@@ -29,9 +29,15 @@ const superheroSchema = new mongoose.Schema({
     type: String,
     required: [true, "Superhero must have a catch phrase"],
   },
-  image: {
-    type: String,
-    required: [true, "Superhero must have a image"],
+  images: {
+    type: [String],
+    required: [true, "Superhero must have images"],
+    validate: {
+      validator: function (val) {
+        return val.length > 0;
+      },
+      message: "Superhero must have at least one image",
+    },
   },
 });
 
