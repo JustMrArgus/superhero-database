@@ -1,6 +1,8 @@
 const Superhero = require("../models/superhero.model");
 
-exports.getAllSuperheroes = async (req, res) => {
+const AppError = require("../utils/appError");
+
+exports.getAllSuperheroes = async (req, res, next) => {
   const superheroes = await Superhero.find();
 
   res.status(200).json({
@@ -11,8 +13,12 @@ exports.getAllSuperheroes = async (req, res) => {
   });
 };
 
-exports.getSuperhero = async (req, res) => {
+exports.getSuperhero = async (req, res, next) => {
   const superhero = await Superhero.findById(req.params.id);
+
+  if (!superhero) {
+    return next(new AppError("No superhero found with that ID", 404));
+  }
 
   res.status(200).json({
     status: "success",
@@ -22,7 +28,7 @@ exports.getSuperhero = async (req, res) => {
   });
 };
 
-exports.createSuperhero = async (req, res) => {
+exports.createSuperhero = async (req, res, next) => {
   const superhero = await Superhero.create(req.body);
 
   res.status(201).json({
@@ -33,11 +39,15 @@ exports.createSuperhero = async (req, res) => {
   });
 };
 
-exports.updateSuperhero = async (req, res) => {
+exports.updateSuperhero = async (req, res, next) => {
   const superhero = await Superhero.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
   });
+
+  if (!superhero) {
+    return next(new AppError("No superhero found with that ID", 404));
+  }
 
   res.status(200).json({
     status: "success",
@@ -47,8 +57,12 @@ exports.updateSuperhero = async (req, res) => {
   });
 };
 
-exports.deleteSuperhero = async (req, res) => {
-  await Superhero.findByIdAndDelete(req.params.id);
+exports.deleteSuperhero = async (req, res, next) => {
+  const superhero = await Superhero.findByIdAndDelete(req.params.id);
+
+  if (!superhero) {
+    return next(new AppError("No superhero found with that ID", 404));
+  }
 
   res.status(204).json({
     status: "success",
