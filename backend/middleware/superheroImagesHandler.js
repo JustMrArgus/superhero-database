@@ -25,8 +25,8 @@ exports.resizeSuperheroImages = catchAsync(async (req, res, next) => {
   req.body.images = [];
 
   await Promise.all(
-    req.files.images.map(async (file, i) => {
-      const filename = `hero-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+    req.files.map(async (file, i) => {
+      const filename = `hero-${Date.now()}-${i + 1}.jpeg`;
 
       await sharp(file.buffer)
         .resize(1920, 1080)
