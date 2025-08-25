@@ -1,8 +1,8 @@
 const Superhero = require("../models/superhero.model");
-
+const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
-exports.getAllSuperheroes = async (req, res, next) => {
+exports.getAllSuperheroes = catchAsync(async (req, res, next) => {
   const superheroes = await Superhero.find();
 
   res.status(200).json({
@@ -11,9 +11,9 @@ exports.getAllSuperheroes = async (req, res, next) => {
       superheroes,
     },
   });
-};
+});
 
-exports.getSuperhero = async (req, res, next) => {
+exports.getSuperhero = catchAsync(async (req, res, next) => {
   const superhero = await Superhero.findById(req.params.id);
 
   if (!superhero) {
@@ -26,9 +26,9 @@ exports.getSuperhero = async (req, res, next) => {
       superhero,
     },
   });
-};
+});
 
-exports.createSuperhero = async (req, res, next) => {
+exports.createSuperhero = catchAsync(async (req, res, next) => {
   const superhero = await Superhero.create(req.body);
 
   res.status(201).json({
@@ -37,9 +37,9 @@ exports.createSuperhero = async (req, res, next) => {
       superhero,
     },
   });
-};
+});
 
-exports.updateSuperhero = async (req, res, next) => {
+exports.updateSuperhero = catchAsync(async (req, res, next) => {
   const superhero = await Superhero.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -55,9 +55,9 @@ exports.updateSuperhero = async (req, res, next) => {
       superhero,
     },
   });
-};
+});
 
-exports.deleteSuperhero = async (req, res, next) => {
+exports.deleteSuperhero = catchAsync(async (req, res, next) => {
   const superhero = await Superhero.findByIdAndDelete(req.params.id);
 
   if (!superhero) {
@@ -68,4 +68,4 @@ exports.deleteSuperhero = async (req, res, next) => {
     status: "success",
     data: null,
   });
-};
+});
