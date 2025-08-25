@@ -3,7 +3,15 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 
 exports.getAllSuperheroes = catchAsync(async (req, res, next) => {
-  const superheroes = await Superhero.find();
+  let query = Superhero.find();
+
+  const page = +req.query.page || 1;
+  const limit = +req.query.limit || 100;
+  const skip = (page - 1) * limit;
+
+  query = query.skip(skip).limit(limit);
+
+  const superheroes = await query;
 
   res.status(200).json({
     status: "success",

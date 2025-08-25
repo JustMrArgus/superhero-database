@@ -7,6 +7,8 @@ const superheroesRoutes = require("./routes/superhero.routes");
 
 const globalErrorController = require("./controllers/error.controller");
 
+const AppError = require("./utils/appError");
+
 app.use(express.json({ limit: "10kb" }));
 
 app.use(express.static(path.join(__dirname, "public")));
