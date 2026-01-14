@@ -1,0 +1,59 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: superhero-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: superhero-db
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - superhero-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: superhero-backend
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      DB: mongodb://mongodb:27017/superhero-db
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    volumes:
+      - hero_images:/app/public/img/heroes
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - superhero-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:3000
+    container_name: superhero-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - superhero-network
+
+volumes:
+  mongodb_data:
+  hero_images:
+
+networks:
+  superhero-network:
+    driver: bridge
