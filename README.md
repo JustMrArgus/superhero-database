@@ -160,7 +160,7 @@ npm run test:coverage  # With coverage
 ### Query Parameters
 
 - `page` - Page number (default: 1)
-- `limit` - Items per page (default: 5)
+- `limit` - Items per page (default: 5 )
 
 ### Environment Variables
 
