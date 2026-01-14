@@ -36,7 +36,7 @@ docker compose up
 
 The application will be available at:
 
-- Frontend: [http://localhost](http://localhost)
+- Frontend: [http://localhost:5173](http://localhost:5173)
 - Backend API: [http://localhost:3000](http://localhost:3000)
 
 To stop the services:
