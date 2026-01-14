@@ -20,28 +20,30 @@ const upload = multer({
 exports.uploadSuperheroImages = upload.array("images");
 
 exports.resizeSuperheroImages = catchAsync(async (req, res, next) => {
-  if (!req.files) return next();
-
-  let existingImages = req.body.images || [];
-  if (!Array.isArray(existingImages)) {
+  let existingImages = req.body.existingImages || [];
+  if (typeof existingImages === "string") {
     existingImages = [existingImages];
   }
 
   req.body.images = [...existingImages];
 
-  await Promise.all(
-    req.files.map(async (file, i) => {
-      const filename = `hero-${Date.now()}-${i + 1}.jpeg`;
+  if (req.files && req.files.length > 0) {
+    await Promise.all(
+      req.files.map(async (file, i) => {
+        const filename = `hero-${Date.now()}-${i + 1}.jpeg`;
 
-      await sharp(file.buffer)
-        .resize(1920, 1080)
-        .toFormat("jpeg")
-        .jpeg({ quality: 90 })
-        .toFile(`public/img/heroes/${filename}`);
+        await sharp(file.buffer)
+          .resize(1920, 1080)
+          .toFormat("jpeg")
+          .jpeg({ quality: 90 })
+          .toFile(`public/img/heroes/${filename}`);
 
-      req.body.images.push(filename);
-    })
-  );
+        req.body.images.push(filename);
+      })
+    );
+  }
+
+  delete req.body.existingImages;
 
   next();
 });
